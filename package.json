@@ -1,0 +1,15 @@
+{
+  "name": "profiles_data_prep",
+  "version": "1.0.0",
+  "description": "Data prep scripts for CTData town profiles",
+  "main": "api2pdf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.15.0",
+    "minimist": "^1.2.0"
+  }
+}

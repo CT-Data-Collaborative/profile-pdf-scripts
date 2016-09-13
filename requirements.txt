@@ -1,0 +1,4 @@
+Naked==0.1.31
+PyYAML==3.11
+requests==2.11.1
+wheel==0.24.0
