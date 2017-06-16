@@ -235,22 +235,22 @@ var grandListTopFiveCell = function (data, name, variable) {
     }
 };
 
-
-var cmtCell = function (data, grade, subject) {
-    var datum = lodash.chain(data.education.cmt[0].cmt)
-        .find(function (o) {
-            return (o.Grade === grade
-            && o.Subject === subject);
-        })
-        .value()
-        .Value;
-
-    if (datum.trim() === "-") {
-        return {"type": "string", "value": "NA"};
-    } else {
-        return {"type": "percent", "value": parseFloat(datum) / 100};
-    }
-};
+//
+// var cmtCell = function (data, grade, subject) {
+//     var datum = lodash.chain(data.education.cmt[0].cmt)
+//         .find(function (o) {
+//             return (o.Grade === grade
+//             && o.Subject === subject);
+//         })
+//         .value()
+//         .Value;
+//
+//     if (datum.trim() === "-") {
+//         return {"type": "string", "value": "NA"};
+//     } else {
+//         return {"type": "percent", "value": parseFloat(datum) / 100};
+//     }
+// };
 
 var gradeRateCell = function (data, gender) {
     var cell = lodash.chain(data.education.gradrate[0].gradrate)
@@ -590,21 +590,21 @@ function serviceToProfile(town, county, state) {
     };
 
 
-    var cmtCell = function (data, grade, subject) {
-        var datum = lodash.chain(data.education.cmt[0].cmt)
-            .find(function (o) {
-                return (o.Grade === grade
-                && o.Subject === subject);
-            })
-            .value()
-            .Value;
-
-        if (datum.trim() === "-") {
-            return {"type": "string", "value": "NA"};
-        } else {
-            return {"type": "percent", "value": parseFloat(datum) / 100};
-        }
-    };
+    // var cmtCell = function (data, grade, subject) {
+    //     var datum = lodash.chain(data.education.cmt[0].cmt)
+    //         .find(function (o) {
+    //             return (o.Grade === grade
+    //             && o.Subject === subject);
+    //         })
+    //         .value()
+    //         .Value;
+    //
+    //     if (datum.trim() === "-") {
+    //         return {"type": "string", "value": "NA"};
+    //     } else {
+    //         return {"type": "percent", "value": parseFloat(datum) / 100};
+    //     }
+    // };
 
     var gradeRateCell = function (data, gender) {
         var cell = lodash.chain(data.education.gradrate[0].gradrate)
@@ -1758,76 +1758,76 @@ function serviceToProfile(town, county, state) {
     // ********************************************************
 
 
-    output.config.info.datayears["cmt"] = town.education.cmt[0].cmt[0].Year;
+    // output.config.info.datayears["cmt"] = town.education.cmt[0].cmt[0].Year;
 
-    output.objects.push({
-        type: "table",
-        name: "cmt",
-        config: {
-            header_leaf: true,
-            nest: ["Subject", "Grade"],
-            order: {
-                Subject: ["Reading", "Math", "Writing"],
-                Grade: ["Grade 4", "Grade 6", "Grade 8"]
-            }
-        },
-        data: {
-            "fields": [
-                {"type": "string", "id": "Grade"},
-                {"type": "string", "id": "Subject"},
-                {"type": "string", "id": "Town"},
-                {"type": "string", "id": "State"}
-            ],
-            "records": [
-                {
-                    "Grade": {"type": "string", "value": "Grade 3"},
-                    "Subject": {"value": "Reading", "type": "string"},
-                    "Town": cmtCell(town, "Grade 3", "Reading"),
-                    "State": cmtCell(state, "Grade 3", "Reading")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 4"},
-                    "Subject": {"value": "Reading", "type": "string"},
-                    "Town": cmtCell(town, "Grade 4", "Reading"),
-                    "State": cmtCell(state, "Grade 4", "Reading")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 8"},
-                    "Subject": {"value": "Reading", "type": "string"},
-                    "Town": cmtCell(town, "Grade 8", "Reading"),
-                    "State": cmtCell(state, "Grade 8", "Reading")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 3"},
-                    "Subject": {"value": "Math", "type": "string"},
-                    "Town": cmtCell(town, "Grade 3", "Math"),
-                    "State": cmtCell(state, "Grade 3", "Math")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 4"},
-                    "Subject": {"value": "Math", "type": "string"},
-                    "Town": cmtCell(town, "Grade 4", "Math"),
-                    "State": cmtCell(state, "Grade 4", "Math")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 8"},
-                    "Subject": {"value": "Math", "type": "string"},
-                    "Town": cmtCell(town, "Grade 8", "Math"),
-                    "State": cmtCell(state, "Grade 8", "Math")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 3"},
-                    "Subject": {"value": "Writing", "type": "string"},
-                    "Town": cmtCell(town, "Grade 3", "Writing"),
-                    "State": cmtCell(state, "Grade 3", "Writing")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 4"},
-                    "Subject": {"value": "Writing", "type": "string"},
-                    "Town": cmtCell(town, "Grade 4", "Writing"),
-                    "State": cmtCell(state, "Grade 4", "Writing")
-                }, {
-                    "Grade": {"type": "string", "value": "Grade 8"},
-                    "Subject": {"value": "Writing", "type": "string"},
-                    "Town": cmtCell(town, "Grade 8", "Writing"),
-                    "State": cmtCell(state, "Grade 8", "Writing")
-                }
-            ]
-        }
-    });
+    // output.objects.push({
+    //     type: "table",
+    //     name: "cmt",
+    //     config: {
+    //         header_leaf: true,
+    //         nest: ["Subject", "Grade"],
+    //         order: {
+    //             Subject: ["Reading", "Math", "Writing"],
+    //             Grade: ["Grade 4", "Grade 6", "Grade 8"]
+    //         }
+    //     },
+    //     data: {
+    //         "fields": [
+    //             {"type": "string", "id": "Grade"},
+    //             {"type": "string", "id": "Subject"},
+    //             {"type": "string", "id": "Town"},
+    //             {"type": "string", "id": "State"}
+    //         ],
+    //         "records": [
+    //             {
+    //                 "Grade": {"type": "string", "value": "Grade 3"},
+    //                 "Subject": {"value": "Reading", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 3", "Reading"),
+    //                 "State": cmtCell(state, "Grade 3", "Reading")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 4"},
+    //                 "Subject": {"value": "Reading", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 4", "Reading"),
+    //                 "State": cmtCell(state, "Grade 4", "Reading")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 8"},
+    //                 "Subject": {"value": "Reading", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 8", "Reading"),
+    //                 "State": cmtCell(state, "Grade 8", "Reading")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 3"},
+    //                 "Subject": {"value": "Math", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 3", "Math"),
+    //                 "State": cmtCell(state, "Grade 3", "Math")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 4"},
+    //                 "Subject": {"value": "Math", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 4", "Math"),
+    //                 "State": cmtCell(state, "Grade 4", "Math")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 8"},
+    //                 "Subject": {"value": "Math", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 8", "Math"),
+    //                 "State": cmtCell(state, "Grade 8", "Math")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 3"},
+    //                 "Subject": {"value": "Writing", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 3", "Writing"),
+    //                 "State": cmtCell(state, "Grade 3", "Writing")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 4"},
+    //                 "Subject": {"value": "Writing", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 4", "Writing"),
+    //                 "State": cmtCell(state, "Grade 4", "Writing")
+    //             }, {
+    //                 "Grade": {"type": "string", "value": "Grade 8"},
+    //                 "Subject": {"value": "Writing", "type": "string"},
+    //                 "Town": cmtCell(town, "Grade 8", "Writing"),
+    //                 "State": cmtCell(state, "Grade 8", "Writing")
+    //             }
+    //         ]
+    //     }
+    // });
 
     // ********************************************************
     //
@@ -1963,9 +1963,9 @@ function serviceToProfile(town, county, state) {
     var absentGrades = [
         {"type": "string", "value": ""},
         {"type": "string", "value": "All"},
-        {"type": "string", "value": "K - 3"},
-        {"type": "string", "value": "4 - 8"},
-        {"type": "string", "value": "9 - 12"}
+        // {"type": "string", "value": "K - 3"},
+        // {"type": "string", "value": "4 - 8"},
+        // {"type": "string", "value": "9 - 12"}
     ];
 
     var absentState = lodash.chain(absentGrades)
@@ -1979,7 +1979,7 @@ function serviceToProfile(town, county, state) {
                     return cell.Grade === o.value.replace(/\s/g, "")
                 })
                 .value()
-                .Value;
+                // .Value;
 
             if (value === "-9999") {
                 return {"type": "string", "value": "*"}
@@ -2000,8 +2000,7 @@ function serviceToProfile(town, county, state) {
                 .find(function (cell) {
                     return cell.Grade === o.value.replace(/\s/g, "")
                 })
-                .value()
-                .Value;
+                .value();
 
             if (value === "-9999") {
                 return {"type": "string", "value": "*"}
@@ -2019,7 +2018,7 @@ function serviceToProfile(town, county, state) {
         config: {
             nest: ["Location", "Grade"],
             order: {
-                Grade: ["All", "K - 3", "4 - 8", "9 - 12"]
+                Grade: ["All"]
             }
         },
         data: {

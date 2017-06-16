@@ -6,3 +6,5 @@ debug/
 .idea/
 *.pdf
 aws-credentials.json
+.DS_Store
+test_data/
