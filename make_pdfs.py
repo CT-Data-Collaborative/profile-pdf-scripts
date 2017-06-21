@@ -72,7 +72,7 @@ def _get_data(geography, endpoint, output_path):
     print("Getting data for " + geography)
 
     output_file = f'{output_path}/{geography}.json'
-    if os._exists(output_file):
+    if os.path.exists(output_file):
         return output_file
     try:
         response = requests.get(f'{endpoint}/{geography}')
@@ -133,7 +133,8 @@ def convert(town, output, data, profile_server, pdf_server):
         raw_county_data = _get_data(town['County'], endpoints['county'], county_dir)
         raw_state_data = _get_data(town['State'], endpoints['state'], state_dir)
         pdf_data_path = _restructure_data(raw_town_data, raw_county_data, raw_state_data, town['Town'], pdfdata_dir)
-        _generate_pdf(town['Town'], pdf_data_path, endpoints['pdf'], final_path)
+        if not os.path.exists(f'{final_path}/{town["Town"]}.pdf'):
+            _generate_pdf(town['Town'], pdf_data_path, endpoints['pdf'], final_path)
 
 
 if __name__ == '__main__':

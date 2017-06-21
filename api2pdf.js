@@ -236,7 +236,7 @@ var grandListTopFiveCell = function (data, name, variable) {
 };
 
 //
-// var cmtCell = function (data, grade, subject) {
+// var smarterBalancedCell = function (data, grade, subject) {
 //     var datum = lodash.chain(data.education.cmt[0].cmt)
 //         .find(function (o) {
 //             return (o.Grade === grade
@@ -457,7 +457,6 @@ function serviceToProfile(town, county, state) {
                 }).value().Value / 100;
     };
 
-
     var factCell = function (data, fact) {
         return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
             .find(function (o) {
@@ -477,7 +476,6 @@ function serviceToProfile(town, county, state) {
     var populationStat = function (data) {
         return findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
     };
-
 
     var educationCell = function (data, attainment, measureType) {
         return lodash.chain(data.demographics.edattain[0].ed_attainment)
@@ -589,22 +587,20 @@ function serviceToProfile(town, county, state) {
         }
     };
 
+    var smarterBalancedCell = function (data, grade, subject) {
+        var datum = lodash.chain(data.education.smarterbalanced[0].smarterbalanced)
+            .find(function (o) {
+                return (o.Grade === grade && o.Subject === subject);
+            })
+            .value()
+            .Value;
 
-    // var cmtCell = function (data, grade, subject) {
-    //     var datum = lodash.chain(data.education.cmt[0].cmt)
-    //         .find(function (o) {
-    //             return (o.Grade === grade
-    //             && o.Subject === subject);
-    //         })
-    //         .value()
-    //         .Value;
-    //
-    //     if (datum.trim() === "-") {
-    //         return {"type": "string", "value": "NA"};
-    //     } else {
-    //         return {"type": "percent", "value": parseFloat(datum) / 100};
-    //     }
-    // };
+        if (datum.trim() === "-") {
+            return {"type": "string", "value": "NA"};
+        } else {
+            return {"type": "percent", "value": parseFloat(datum) / 100};
+        }
+    };
 
     var gradeRateCell = function (data, gender) {
         var cell = lodash.chain(data.education.gradrate[0].gradrate)
@@ -625,7 +621,6 @@ function serviceToProfile(town, county, state) {
 
         return cell;
     };
-
 
     var revenueCell = function (data, indicator) {
         return lodash.chain(data.government.revenue[0].municipal_revenue_and_expenditures)
@@ -1782,53 +1777,115 @@ function serviceToProfile(town, county, state) {
     //             {
     //                 "Grade": {"type": "string", "value": "Grade 3"},
     //                 "Subject": {"value": "Reading", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 3", "Reading"),
-    //                 "State": cmtCell(state, "Grade 3", "Reading")
+    //                 "Town": smarterBalancedCell(town, "Grade 3", "Reading"),
+    //                 "State": smarterBalancedCell(state, "Grade 3", "Reading")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 4"},
     //                 "Subject": {"value": "Reading", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 4", "Reading"),
-    //                 "State": cmtCell(state, "Grade 4", "Reading")
+    //                 "Town": smarterBalancedCell(town, "Grade 4", "Reading"),
+    //                 "State": smarterBalancedCell(state, "Grade 4", "Reading")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 8"},
     //                 "Subject": {"value": "Reading", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 8", "Reading"),
-    //                 "State": cmtCell(state, "Grade 8", "Reading")
+    //                 "Town": smarterBalancedCell(town, "Grade 8", "Reading"),
+    //                 "State": smarterBalancedCell(state, "Grade 8", "Reading")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 3"},
     //                 "Subject": {"value": "Math", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 3", "Math"),
-    //                 "State": cmtCell(state, "Grade 3", "Math")
+    //                 "Town": smarterBalancedCell(town, "Grade 3", "Math"),
+    //                 "State": smarterBalancedCell(state, "Grade 3", "Math")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 4"},
     //                 "Subject": {"value": "Math", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 4", "Math"),
-    //                 "State": cmtCell(state, "Grade 4", "Math")
+    //                 "Town": smarterBalancedCell(town, "Grade 4", "Math"),
+    //                 "State": smarterBalancedCell(state, "Grade 4", "Math")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 8"},
     //                 "Subject": {"value": "Math", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 8", "Math"),
-    //                 "State": cmtCell(state, "Grade 8", "Math")
+    //                 "Town": smarterBalancedCell(town, "Grade 8", "Math"),
+    //                 "State": smarterBalancedCell(state, "Grade 8", "Math")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 3"},
     //                 "Subject": {"value": "Writing", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 3", "Writing"),
-    //                 "State": cmtCell(state, "Grade 3", "Writing")
+    //                 "Town": smarterBalancedCell(town, "Grade 3", "Writing"),
+    //                 "State": smarterBalancedCell(state, "Grade 3", "Writing")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 4"},
     //                 "Subject": {"value": "Writing", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 4", "Writing"),
-    //                 "State": cmtCell(state, "Grade 4", "Writing")
+    //                 "Town": smarterBalancedCell(town, "Grade 4", "Writing"),
+    //                 "State": smarterBalancedCell(state, "Grade 4", "Writing")
     //             }, {
     //                 "Grade": {"type": "string", "value": "Grade 8"},
     //                 "Subject": {"value": "Writing", "type": "string"},
-    //                 "Town": cmtCell(town, "Grade 8", "Writing"),
-    //                 "State": cmtCell(state, "Grade 8", "Writing")
+    //                 "Town": smarterBalancedCell(town, "Grade 8", "Writing"),
+    //                 "State": smarterBalancedCell(state, "Grade 8", "Writing")
     //             }
     //         ]
     //     }
     // });
 
+    // ********************************************************
+    //
+    // Start Smarter Balanced Data Processing
+    //
+    // ********************************************************
+
+
+    output.config.info.datayears["smarterbalanced"] = town.education.smarterbalanced[0].smarterbalanced[0].Year;
+
+    output.objects.push({
+        type: "table",
+        name: "smarterbalanced",
+        config: {
+            header_leaf: true,
+            nest: ["Subject", "Grade"],
+            order: {
+                Subject: ["Math", "ELA"],
+                Grade: ["Grade 4", "Grade 6", "Grade 8"]
+            }
+        },
+        data: {
+            "fields": [
+                {"type": "string", "id": "Grade"},
+                {"type": "string", "id": "Subject"},
+                {"type": "string", "id": "Town"},
+                {"type": "string", "id": "State"}
+            ],
+            "records": [
+                {
+                    "Grade": {"type": "string", "value": "Grade 3"},
+                    "Subject": {"value": "Math", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 3", "Math"),
+                    "State": smarterBalancedCell(state, "Grade 3", "Math")
+                }, {
+                    "Grade": {"type": "string", "value": "Grade 4"},
+                    "Subject": {"value": "Math", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 4", "Math"),
+                    "State": smarterBalancedCell(state, "Grade 4", "Math")
+                }, {
+                    "Grade": {"type": "string", "value": "Grade 8"},
+                    "Subject": {"value": "Math", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 8", "Math"),
+                    "State": smarterBalancedCell(state, "Grade 8", "Math")
+                }, {
+                    "Grade": {"type": "string", "value": "Grade 3"},
+                    "Subject": {"value": "ELA", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 3", "ELA"),
+                    "State": smarterBalancedCell(state, "Grade 3", "ELA")
+                }, {
+                    "Grade": {"type": "string", "value": "Grade 4"},
+                    "Subject": {"value": "ELA", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 4", "ELA"),
+                    "State": smarterBalancedCell(state, "Grade 4", "ELA")
+                }, {
+                    "Grade": {"type": "string", "value": "Grade 8"},
+                    "Subject": {"value": "ELA", "type": "string"},
+                    "Town": smarterBalancedCell(town, "Grade 8", "ELA"),
+                    "State": smarterBalancedCell(state, "Grade 8", "ELA")
+                }
+            ]
+        }
+    });
     // ********************************************************
     //
     // Start Enrollment Data Processing
@@ -1962,10 +2019,7 @@ function serviceToProfile(town, county, state) {
 
     var absentGrades = [
         {"type": "string", "value": ""},
-        {"type": "string", "value": "All"},
-        // {"type": "string", "value": "K - 3"},
-        // {"type": "string", "value": "4 - 8"},
-        // {"type": "string", "value": "9 - 12"}
+        {"type": "string", "value": "All"}
     ];
 
     var absentState = lodash.chain(absentGrades)
@@ -1974,13 +2028,7 @@ function serviceToProfile(town, county, state) {
                 return {"type": "string", "value": "Connecticut"}
             }
 
-            var value = lodash.chain(state.education.absenteeism[0].absenteeism)
-                .find(function (cell) {
-                    return cell.Grade === o.value.replace(/\s/g, "")
-                })
-                .value()
-                // .Value;
-
+            var value = lodash.chain(state.education.absenteeism[0].absenteeism[0]).value().Value;
             if (value === "-9999") {
                 return {"type": "string", "value": "*"}
             } else {
@@ -1989,26 +2037,23 @@ function serviceToProfile(town, county, state) {
         })
         .value();
 
-    var absentDistrict = lodash.chain(absentGrades)
-        .map(function (o, i, a) {
-            if (i === 0) {
-                var district = town.education.absenteeism[0].absenteeism[0].District;
-                return {"type": "string", "value": district}
-            }
-
-            var value = lodash.chain(town.education.absenteeism[0].absenteeism)
-                .find(function (cell) {
-                    return cell.Grade === o.value.replace(/\s/g, "")
-                })
-                .value();
-
-            if (value === "-9999") {
-                return {"type": "string", "value": "*"}
-            } else {
-                return {"type": "percent", "value": (parseFloat(value) / 100)}
-            }
+    var absenteeism = findByKey(town.education.absenteeism, "absenteeism").absenteeism;
+    absenteeism = absenteeism = lodash.chain(absenteeism)
+        .map(function (o) {
+            return [
+                {
+                    "type": "string",
+                    "value": o.District
+                },
+                {
+                    "type": "percent",
+                    "value": (o.Value == "-9999" || o.Value == "-6666") ? "*" : (parseFloat(o.Value) / 100)
+                }
+            ]
         })
         .value();
+    absenteeism.unshift(absentState);
+    absenteeism.unshift(absentGrades);
 
     output.config.info.datayears["absenteeism"] = town.education.absenteeism[0].absenteeism[0].Year;
 
@@ -2024,14 +2069,10 @@ function serviceToProfile(town, county, state) {
         data: {
             "fields": [
                 {"type": "string", "id": "Location"},
-                {"type": "string", "id": "Grade"},
+                // {"type": "string", "id": "Grade"},
                 {"type": "percent", "id": "Value"}
             ],
-            "records": [
-                absentGrades,
-                absentState,
-                absentDistrict
-            ]
+            "records": absenteeism
         }
     });
 
