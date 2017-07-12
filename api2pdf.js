@@ -997,7 +997,7 @@ function serviceToProfile(town, county, state) {
                     "County": {"type": "integer", "value": raceCell(county, "Black or African American Alone")},
                     "State": {"type": "integer", "value": raceCell(state, "Black or African American Alone")}
                 }, {
-                    "Race": {"type": "string", "value": "Asian Pacific"},
+                    "Race": {"type": "string", "value": "Asian"},
                     "Town": {"type": "integer", "value": raceCell(town, "Asian Alone")},
                     "County": {"type": "integer", "value": raceCell(county, "Asian Alone")},
                     "State": {"type": "integer", "value": raceCell(state, "Asian Alone")}
@@ -1005,15 +1005,15 @@ function serviceToProfile(town, county, state) {
                     "Race": {"type": "string", "value": "Native American"},
                     "Town": {
                         "type": "integer",
-                        "value": raceCell(town, "Native Hawaiian and Other Pacific Islander Alone")
+                        "value": raceCell(town, "American Indian and Alaska Native Alone")
                     },
                     "County": {
                         "type": "integer",
-                        "value": raceCell(county, "Native Hawaiian and Other Pacific Islander Alone")
+                        "value": raceCell(county, "American Indian and Alaska Native Alone")
                     },
                     "State": {
                         "type": "integer",
-                        "value": raceCell(state, "Native Hawaiian and Other Pacific Islander Alone")
+                        "value": raceCell(state, "American Indian and Alaska Native Alone")
                     }
                 }, {
                     "Race": {"type": "string", "value": "Other/Multi-Race"},
