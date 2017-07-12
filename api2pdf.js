@@ -19,6 +19,7 @@ var args = minimist(process.argv.slice(2));
 var townFile = args.town;
 var countyFile = args.county;
 var stateFile = args.state;
+var profileYear = args.year;
 
 // var townFile = 'data/town/Suffield.json';
 // var countyFile = 'data/county/Hartford County.json';
@@ -44,355 +45,355 @@ console.log(JSON.stringify(output));
 
 // Constants
 
-var DISTANT_POINTS = [
-    "Hartford",
-    "Boston",
-    "Montreal",
-    "Providence",
-    "New York City"
-];
+// var DISTANT_POINTS = [
+//     "Hartford",
+//     "Boston",
+//     "Montreal",
+//     "Providence",
+//     "New York City"
+// ];
 
 
 // Helpers
-var parse_suppression = function (cell) {
-    if (cell.value == "-9999") {
-        return {"type": "string", "value": "NA"};
-    } else {
-        return cell;
-    }
-};
-
-var findByKey = function (data, key) {
-    return lodash.chain(data)
-        .find(function (o) {
-            return (key in o);
-        }).value();
-};
-
-var sfyFormat = function (year) {
-    if (year.slice(0, 3) === "SFY") {
-        year = year.slice(-4);
-    }
-
-    return year;
-};
-
-var growthValue = function (data, endYear) {
-    var popTimePeriodOne = findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
-    var popTimePeriodTwo = findByKey(data.demographics.population, "population_projection").population_projection[0].Value;
-    var growthDenominator = 2020 - endYear;
-
-    return (((popTimePeriodTwo - popTimePeriodOne) / popTimePeriodTwo) / growthDenominator);
-};
-
-var raceCell = function (data, race) {
-    data = data.demographics.racecohort[0].race_cohort;
-    return lodash.chain(data)
-        .find(function (o) {
-            return o["Race/Ethnicity"] === race && o.Row === "Population";
-        })
-        .value()
-        .Value;
-};
-
-var povertyCell = function (data) {
-    data = findByKey(data.demographics.misc, "poverty").poverty;
-    return lodash.chain(data)
-            .find(function (o) {
-                return o.Row === "Poverty Status";
-            }).value().Value / 100;
-};
-
-
-var factCell = function (data, fact) {
-    return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
-        .find(function (o) {
-            return o.Row !== "Margins of Error";
-        }).value().Value;
-};
-
-var factYear = function (data, fact) {
-    return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
-        .find(function (o) {
-            return o.Row !== "Margins of Error";
-        })
-        .value()
-        .Year;
-};
-
-var populationStat = function (data) {
-    return findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
-};
-
-
-var educationCell = function (data, attainment, measureType) {
-    return lodash.chain(data.demographics.edattain[0].ed_attainment)
-        .find(function (o) {
-            return o["Measure Type"] === measureType
-                && o["Educational Attainment"] === attainment
-                && o.Row !== "Margins of Error";
-        })
-        .value()
-        .Value;
-};
-
-var ageCell = function (data, ages, measureType) {
-    ages = [].concat(ages);
-
-    var toSum = lodash.chain(ages)
-        .map(function (age) {
-            return lodash.chain(data.demographics.agecohort[0].age_cohort)
-                .find(function (o) {
-                    return (
-                        o["Measure Type"] === measureType
-                        && o["Age Cohort"] === age
-                        && o.Row !== "Margins of Error"
-                    );
-                })
-                .value()
-                .Value;
-        })
-        .value();
-
-    return lodash.reduce(toSum, function (sum, value) {
-        return sum + value;
-    });
-};
-
-var employmentSectors = function (data) {
-    data = data.government.industryemployment[0].employmentbyindustry;
-    return lodash.chain(data)
-        .sortBy(function (o) {
-            return o.NAICS;
-        })
-        .filter(function (o) {
-            return o.NAICS !== "";
-        })
-        .map(function (o) {
-            var objectToJoin = [o.NAICS, o.Column];
-            return objectToJoin.join(" - ");
-        })
-        .uniq()
-        .value();
-};
-
-var employmentCell = function (data, sector) {
-    if (sector.split(" - ")[0] !== "Total") {
-        sector = sector.split(" - ").pop();
-    }
-    data = data.government.industryemployment[0].employmentbyindustry;
-
-    var cell = lodash.chain(data)
-        .find(function (o) {
-            return o.Column === sector;
-        })
-        .value()
-        .Value;
-
-    if (cell == "-9999") {
-        return {"type": "string", "value": "NA"};
-    } else {
-        return {"type": "integer", "value": cell};
-    }
-};
-
-var unitsCell = function (data, sector) {
-    if (sector.split(" - ")[0] !== "Total") {
-        sector = sector.split(" - ").pop();
-    }
-    data = data.government.industryunits[0].unitsbyindustry;
-
-    var cell = lodash.chain(data)
-        .find(function (o) {
-            return o.Column === sector;
-        })
-        .value()
-        .Value;
-
-    if (cell == "-9999") {
-        return {"type": "string", "value": "NA"};
-    } else {
-        return {"type": "integer", "value": cell};
-    }
-};
-
-var grandListTopFiveCell = function (data, name, variable) {
-    var cell = lodash.chain(data.government.grandlisttopfive[0].grand_top_five)
-        .find(function (o) {
-            return (
-                o.Name === name
-            );
-        })
-        .value()
-        .Value;
-
-    if (cell === "-9999") {
-        return {"type": "string", "value": "NA"};
-    } else if (cell === "-666666") {
-        return {"type": "string", "value": " - "};
-    } else {
-        return {"type": "currency", "value": cell};
-    }
-};
-
+// var parse_suppression = function (cell) {
+//     if (cell.value == "-9999") {
+//         return {"type": "string", "value": "NA"};
+//     } else {
+//         return cell;
+//     }
+// };
 //
-// var smarterBalancedCell = function (data, grade, subject) {
-//     var datum = lodash.chain(data.education.cmt[0].cmt)
+// var findByKey = function (data, key) {
+//     return lodash.chain(data)
 //         .find(function (o) {
-//             return (o.Grade === grade
-//             && o.Subject === subject);
+//             return (key in o);
+//         }).value();
+// };
+//
+// var sfyFormat = function (year) {
+//     if (year.slice(0, 3) === "SFY") {
+//         year = year.slice(-4);
+//     }
+//
+//     return year;
+// };
+//
+// var growthValue = function (data, endYear) {
+//     var popTimePeriodOne = findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
+//     var popTimePeriodTwo = findByKey(data.demographics.population, "population_projection").population_projection[0].Value;
+//     var growthDenominator = 2020 - endYear;
+//
+//     return (((popTimePeriodTwo - popTimePeriodOne) / popTimePeriodTwo) / growthDenominator);
+// };
+//
+// var raceCell = function (data, race) {
+//     data = data.demographics.racecohort[0].race_cohort;
+//     return lodash.chain(data)
+//         .find(function (o) {
+//             return o["Race/Ethnicity"] === race && o.Row === "Population";
+//         })
+//         .value()
+//         .Value;
+// };
+//
+// var povertyCell = function (data) {
+//     data = findByKey(data.demographics.misc, "poverty").poverty;
+//     return lodash.chain(data)
+//             .find(function (o) {
+//                 return o.Row === "Poverty Status";
+//             }).value().Value / 100;
+// };
+//
+//
+// var factCell = function (data, fact) {
+//     return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
+//         .find(function (o) {
+//             return o.Row !== "Margins of Error";
+//         }).value().Value;
+// };
+//
+// var factYear = function (data, fact) {
+//     return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
+//         .find(function (o) {
+//             return o.Row !== "Margins of Error";
+//         })
+//         .value()
+//         .Year;
+// };
+//
+// var populationStat = function (data) {
+//     return findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
+// };
+//
+//
+// var educationCell = function (data, attainment, measureType) {
+//     return lodash.chain(data.demographics.edattain[0].ed_attainment)
+//         .find(function (o) {
+//             return o["Measure Type"] === measureType
+//                 && o["Educational Attainment"] === attainment
+//                 && o.Row !== "Margins of Error";
+//         })
+//         .value()
+//         .Value;
+// };
+//
+// var ageCell = function (data, ages, measureType) {
+//     ages = [].concat(ages);
+//
+//     var toSum = lodash.chain(ages)
+//         .map(function (age) {
+//             return lodash.chain(data.demographics.agecohort[0].age_cohort)
+//                 .find(function (o) {
+//                     return (
+//                         o["Measure Type"] === measureType
+//                         && o["Age Cohort"] === age
+//                         && o.Row !== "Margins of Error"
+//                     );
+//                 })
+//                 .value()
+//                 .Value;
+//         })
+//         .value();
+//
+//     return lodash.reduce(toSum, function (sum, value) {
+//         return sum + value;
+//     });
+// };
+//
+// var employmentSectors = function (data) {
+//     data = data.government.industryemployment[0].employmentbyindustry;
+//     return lodash.chain(data)
+//         .sortBy(function (o) {
+//             return o.NAICS;
+//         })
+//         .filter(function (o) {
+//             return o.NAICS !== "";
+//         })
+//         .map(function (o) {
+//             var objectToJoin = [o.NAICS, o.Column];
+//             return objectToJoin.join(" - ");
+//         })
+//         .uniq()
+//         .value();
+// };
+//
+// var employmentCell = function (data, sector) {
+//     if (sector.split(" - ")[0] !== "Total") {
+//         sector = sector.split(" - ").pop();
+//     }
+//     data = data.government.industryemployment[0].employmentbyindustry;
+//
+//     var cell = lodash.chain(data)
+//         .find(function (o) {
+//             return o.Column === sector;
 //         })
 //         .value()
 //         .Value;
 //
-//     if (datum.trim() === "-") {
+//     if (cell == "-9999") {
 //         return {"type": "string", "value": "NA"};
 //     } else {
-//         return {"type": "percent", "value": parseFloat(datum) / 100};
+//         return {"type": "integer", "value": cell};
 //     }
 // };
-
-var gradeRateCell = function (data, gender) {
-    var cell = lodash.chain(data.education.gradrate[0].gradrate)
-        .find(function (o) {
-            return o.Gender == gender;
-        })
-        .value();
-
-    cell = {
-        "Gender": {"type": "string", "value": gender},
-        "Location": {"type": "string", "value": cell.District},
-        "Value": {"type": "percent", "value": parseInt(cell.Value) / 100}
-    };
-
-    if (cell.Value.value == -99.99) {
-        cell.Value = {"type": "string", "value": "*"};
-    }
-
-    return cell;
-};
-
-
-var revenueCell = function (data, indicator) {
-    return lodash.chain(data.government.revenue[0].municipal_revenue_and_expenditures)
-        .find(function (o) {
-            return o.Row === indicator;
-        })
-        .value()
-        .Value;
-};
-
-var debtCell = function (data, indicator) {
-    return lodash.chain(findByKey(data.government.debt, "municipal_debt").municipal_debt)
-        .find(function (o) {
-            return o.Row === indicator;
-        })
-        .value()
-        .Value;
-};
-
-var ENGLCell = function (data, indicator) {
-    data = findByKey(data.government.grand, "municipal_grand_list").municipal_grand_list;
-    return lodash.chain(data)
-        .find(function (o) {
-            return o.Row === indicator;
-        })
-        .value()
-        .Value;
-};
-
-var housingCell = function (data, subset, find1, find2) {
-    data = findByKey(data.housing[subset], find1)[find1];
-
-    // return data
-    if (find2 === null || find2 === false) {
-        // cell = data[0].Value
-        var cell = data.filter(function (o) {
-            return o.Row !== "Margins of Error";
-        })[0].Value;
-    } else {
-        var cell = lodash.chain(data)
-            .filter(function (o) {
-                return o.Row != "Margins of Error";
-            })
-            .find(function (o) {
-                var match = true;
-                [].concat(find2).forEach(function (condition) {
-                    match = (match && o[condition.key] === condition.value);
-                });
-                return match;
-            })
-            .value()
-            .Value;
-    }
-
-    return (cell === "-9999" ? "NA" : cell);
-};
-
-var housingCellYear = function (data, subset, find1, find2) {
-    data = findByKey(data.housing[subset], find1)[find1];
-
-    // return data
-    if (find2 === null || find2 === false) {
-        return data[0].Year;
-    } else {
-        return lodash.chain(data)
-            .find(function (o) {
-                var match = true;
-                [].concat(find2).forEach(function (condition) {
-                    match = (match && o[condition.key] === condition.value);
-                });
-                return match;
-            })
-            .value()
-            .Year;
-    }
-};
-
-var homeSalesCell = function (data, price) {
-    var cell = lodash.chain(data.housing.sales[0].home_sales)
-        .find(function (o) {
-            return o["Row"] === price;
-        })
-        .value();
-
-    if (cell.Value == -9999) {
-        return "NA";
-    }
-    else {
-        return cell.Value;
-    }
-};
-
-var placeOfWorkCell = function (data, row) {
-    data = findByKey(data.labor.placeofwork, "employmentbyindustry").employmentbyindustry;
-    var value = lodash.chain(data)
-        .find(function (o) {
-            return o.Row === row;
-        })
-        .value()
-        .Value;
-
-    if (value == "-9999") {
-        return {"type": "string", "value": "NA"};
-    } else {
-        return {"type": "integer", "value": value};
-    }
-};
-
-var aagrCell = function (data, row) {
-    return findByKey(data.labor.placeofwork, "aagr").aagr[0].Value;
-};
-
-var residenceCell = function (data, cohort) {
-    data = findByKey(data.labor.placeofresidence, "laborforce").laborforce;
-    return lodash.chain(data)
-        .find(function (o) {
-            return o.Measure === cohort;
-        })
-        .value()
-        .Value;
-};
+//
+// var unitsCell = function (data, sector) {
+//     if (sector.split(" - ")[0] !== "Total") {
+//         sector = sector.split(" - ").pop();
+//     }
+//     data = data.government.industryunits[0].unitsbyindustry;
+//
+//     var cell = lodash.chain(data)
+//         .find(function (o) {
+//             return o.Column === sector;
+//         })
+//         .value()
+//         .Value;
+//
+//     if (cell == "-9999") {
+//         return {"type": "string", "value": "NA"};
+//     } else {
+//         return {"type": "integer", "value": cell};
+//     }
+// };
+//
+// var grandListTopFiveCell = function (data, name, variable) {
+//     var cell = lodash.chain(data.government.grandlisttopfive[0].grand_top_five)
+//         .find(function (o) {
+//             return (
+//                 o.Name === name
+//             );
+//         })
+//         .value()
+//         .Value;
+//
+//     if (cell === "-9999") {
+//         return {"type": "string", "value": "NA"};
+//     } else if (cell === "-666666") {
+//         return {"type": "string", "value": " - "};
+//     } else {
+//         return {"type": "currency", "value": cell};
+//     }
+// };
+//
+// //
+// // var smarterBalancedCell = function (data, grade, subject) {
+// //     var datum = lodash.chain(data.education.cmt[0].cmt)
+// //         .find(function (o) {
+// //             return (o.Grade === grade
+// //             && o.Subject === subject);
+// //         })
+// //         .value()
+// //         .Value;
+// //
+// //     if (datum.trim() === "-") {
+// //         return {"type": "string", "value": "NA"};
+// //     } else {
+// //         return {"type": "percent", "value": parseFloat(datum) / 100};
+// //     }
+// // };
+//
+// var gradeRateCell = function (data, gender) {
+//     var cell = lodash.chain(data.education.gradrate[0].gradrate)
+//         .find(function (o) {
+//             return o.Gender == gender;
+//         })
+//         .value();
+//
+//     cell = {
+//         "Gender": {"type": "string", "value": gender},
+//         "Location": {"type": "string", "value": cell.District},
+//         "Value": {"type": "percent", "value": parseInt(cell.Value) / 100}
+//     };
+//
+//     if (cell.Value.value == -99.99) {
+//         cell.Value = {"type": "string", "value": "*"};
+//     }
+//
+//     return cell;
+// };
+//
+//
+// var revenueCell = function (data, indicator) {
+//     return lodash.chain(data.government.revenue[0].municipal_revenue_and_expenditures)
+//         .find(function (o) {
+//             return o.Row === indicator;
+//         })
+//         .value()
+//         .Value;
+// };
+//
+// var debtCell = function (data, indicator) {
+//     return lodash.chain(findByKey(data.government.debt, "municipal_debt").municipal_debt)
+//         .find(function (o) {
+//             return o.Row === indicator;
+//         })
+//         .value()
+//         .Value;
+// };
+//
+// var ENGLCell = function (data, indicator) {
+//     data = findByKey(data.government.grand, "municipal_grand_list").municipal_grand_list;
+//     return lodash.chain(data)
+//         .find(function (o) {
+//             return o.Row === indicator;
+//         })
+//         .value()
+//         .Value;
+// };
+//
+// var housingCell = function (data, subset, find1, find2) {
+//     data = findByKey(data.housing[subset], find1)[find1];
+//
+//     // return data
+//     if (find2 === null || find2 === false) {
+//         // cell = data[0].Value
+//         var cell = data.filter(function (o) {
+//             return o.Row !== "Margins of Error";
+//         })[0].Value;
+//     } else {
+//         var cell = lodash.chain(data)
+//             .filter(function (o) {
+//                 return o.Row != "Margins of Error";
+//             })
+//             .find(function (o) {
+//                 var match = true;
+//                 [].concat(find2).forEach(function (condition) {
+//                     match = (match && o[condition.key] === condition.value);
+//                 });
+//                 return match;
+//             })
+//             .value()
+//             .Value;
+//     }
+//
+//     return (cell === "-9999" ? "NA" : cell);
+// };
+//
+// var housingCellYear = function (data, subset, find1, find2) {
+//     data = findByKey(data.housing[subset], find1)[find1];
+//
+//     // return data
+//     if (find2 === null || find2 === false) {
+//         return data[0].Year;
+//     } else {
+//         return lodash.chain(data)
+//             .find(function (o) {
+//                 var match = true;
+//                 [].concat(find2).forEach(function (condition) {
+//                     match = (match && o[condition.key] === condition.value);
+//                 });
+//                 return match;
+//             })
+//             .value()
+//             .Year;
+//     }
+// };
+//
+// var homeSalesCell = function (data, price) {
+//     var cell = lodash.chain(data.housing.sales[0].home_sales)
+//         .find(function (o) {
+//             return o["Row"] === price;
+//         })
+//         .value();
+//
+//     if (cell.Value == -9999) {
+//         return "NA";
+//     }
+//     else {
+//         return cell.Value;
+//     }
+// };
+//
+// var placeOfWorkCell = function (data, row) {
+//     data = findByKey(data.labor.placeofwork, "employmentbyindustry").employmentbyindustry;
+//     var value = lodash.chain(data)
+//         .find(function (o) {
+//             return o.Row === row;
+//         })
+//         .value()
+//         .Value;
+//
+//     if (value == "-9999") {
+//         return {"type": "string", "value": "NA"};
+//     } else {
+//         return {"type": "integer", "value": value};
+//     }
+// };
+//
+// var aagrCell = function (data, row) {
+//     return findByKey(data.labor.placeofwork, "aagr").aagr[0].Value;
+// };
+//
+// var residenceCell = function (data, cohort) {
+//     data = findByKey(data.labor.placeofresidence, "laborforce").laborforce;
+//     return lodash.chain(data)
+//         .find(function (o) {
+//             return o.Measure === cohort;
+//         })
+//         .value()
+//         .Value;
+// };
 
 
 /** Main Function **/
@@ -612,7 +613,7 @@ function serviceToProfile(town, county, state) {
         cell = {
             "Gender": {"type": "string", "value": gender},
             "Location": {"type": "string", "value": cell.District},
-            "Value": {"type": "percent", "value": parseInt(cell.Value) / 100}
+            "Value": {"type": "percent", "value": parseFloat(cell.Value) / 100}
         };
 
         if (cell.Value.value == -99.99) {
@@ -793,6 +794,7 @@ function serviceToProfile(town, county, state) {
         config: {
             town: town.name,
             FIPS: fips,
+            profile_year: profileYear,
             info: {
                 address: address,
                 municipalorgs: municipalorgs,
@@ -2485,7 +2487,7 @@ function serviceToProfile(town, county, state) {
             Indicator: {type: "string", value: "As % of State Average"},
             Value: {
                 type: "percent",
-                value: parseInt(ENGLCell(town, "Equalized Net Grand List per Capita as Percent of State Average")) / 100
+                value: parseFloat(ENGLCell(town, "Equalized Net Grand List per Capita as Percent of State Average")) / 100
             }
         })
     }
@@ -2667,21 +2669,21 @@ function serviceToProfile(town, county, state) {
                     Indicator: {type: "string", value: "% Single Unit (" + singleUnitYear + ")"},
                     Town: {
                         type: "percent",
-                        value: parseInt(housingCell(town, "stock", "detatchedhousingunits", [{
+                        value: parseFloat(housingCell(town, "stock", "detatchedhousingunits", [{
                             key: "Row",
                             value: "Detached Units (% of Total)"
                         }])) / 100
                     },
                     County: {
                         type: "percent",
-                        value: parseInt(housingCell(county, "stock", "detatchedhousingunits", [{
+                        value: parseFloat(housingCell(county, "stock", "detatchedhousingunits", [{
                             key: "Row",
                             value: "Detached Units (% of Total)"
                         }])) / 100
                     },
                     State: {
                         type: "percent",
-                        value: parseInt(housingCell(state, "stock", "detatchedhousingunits", [{
+                        value: parseFloat(housingCell(state, "stock", "detatchedhousingunits", [{
                             key: "Row",
                             value: "Detached Units (% of Total)"
                         }])) / 100

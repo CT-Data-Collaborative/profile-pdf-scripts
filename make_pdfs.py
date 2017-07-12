@@ -68,27 +68,28 @@ def _setup_town_list(town):
             towns = [t for t in reader if t['Town'].lower() == town.lower()]
         return towns
 
-def _get_data(geography, endpoint, output_path):
+def _get_data(geography, endpoint, output_path, year):
     print("Getting data for " + geography)
 
     output_file = f'{output_path}/{geography}.json'
     if os.path.exists(output_file):
         return output_file
     try:
-        response = requests.get(f'{endpoint}/{geography}')
+        response = requests.get(f'{endpoint}/{geography}/{year}')
         with open(output_file, 'w') as outfile:
             json.dump(response.json(), outfile)
     except Exception as e:
-        raise Exception(f'There was an error getting data for {geography}.\nUsing url: {endpoint}/{geography}.\n{e}')
+        raise Exception(f'There was an error getting data for {geography}.\nUsing url: {endpoint}/{geography}/{year}.\n{e}')
     return output_file
 
-def _restructure_data(town_path, county_path, state_path, town, output_path):
+def _restructure_data(town_path, county_path, state_path, town, output_path, year):
     print("Restructure API data")
 
     town_flag = f'--town="{town_path}"'
     county_flag = f'--county="{county_path}"'
     state_flag = f'--state="{state_path}"'
-    node_cmd = f'api2pdf.js {town_flag} {county_flag} {state_flag}'
+    year_flag = f'--year="{year}"'
+    node_cmd = f'api2pdf.js {town_flag} {county_flag} {state_flag} {year_flag}'
     json_request = muterun_js(node_cmd)
     pdf_data_path = f'{output_path}/{town}.json'
 
@@ -117,11 +118,12 @@ def _generate_pdf(town, pdf_data_path, pdf_api_target, output_directory):
 
 @click.command()
 @click.option('--town', '-t', default='All', help='Pass in a town name to limit generation to one town.')
+@click.option('--year', '-y', default='2017', help='Town profile year to fetch data for.')
 @click.option('--output', '-o', help='Base directory for saving output', type=click.Path())
 @click.option('--data', '-d', help='Directory for storing fetched data', default='data')
 @click.option('--profile_server', '-p', help='Base URL for Profile Server API. Ignore http.')
 @click.option('--pdf_server', '-s', help='URL or IP for PDF Server.')
-def convert(town, output, data, profile_server, pdf_server):
+def convert(town, year, output, data, profile_server, pdf_server):
     town_dir, county_dir, state_dir, pdfdata_dir = _setup_data_dirs(data)
     towns = _setup_town_list(town)
     endpoints = _setup_api_endpoints(profile_server, pdf_server)
@@ -129,10 +131,10 @@ def convert(town, output, data, profile_server, pdf_server):
         final_path = os.path.join(os.getcwd(), output)
         if not os.path.isdir(final_path):
             os.mkdir(final_path)
-        raw_town_data = _get_data(town['Town'], endpoints['town'], town_dir)
-        raw_county_data = _get_data(town['County'], endpoints['county'], county_dir)
-        raw_state_data = _get_data(town['State'], endpoints['state'], state_dir)
-        pdf_data_path = _restructure_data(raw_town_data, raw_county_data, raw_state_data, town['Town'], pdfdata_dir)
+        raw_town_data = _get_data(town['Town'], endpoints['town'], town_dir, year)
+        raw_county_data = _get_data(town['County'], endpoints['county'], county_dir, year)
+        raw_state_data = _get_data(town['State'], endpoints['state'], state_dir, year)
+        pdf_data_path = _restructure_data(raw_town_data, raw_county_data, raw_state_data, town['Town'], pdfdata_dir, year)
         if not os.path.exists(f'{final_path}/{town["Town"]}.pdf'):
             _generate_pdf(town['Town'], pdf_data_path, endpoints['pdf'], final_path)
 
