@@ -987,12 +987,12 @@ function serviceToProfile(town, county, state) {
             ],
             "records": [
                 {
-                    "Race": {"type": "string", "value": "White"},
+                    "Race": {"type": "string", "value": "White Alone, Non-Hispanic"},
                     "Town": {"type": "integer", "value": raceCell(town, "White Alone, Not Hispanic or Latino")},
                     "County": {"type": "integer", "value": raceCell(county, "White Alone, Not Hispanic or Latino")},
                     "State": {"type": "integer", "value": raceCell(state, "White Alone, Not Hispanic or Latino")}
                 }, {
-                    "Race": {"type": "string", "value": "Black"},
+                    "Race": {"type": "string", "value": "Black Alone, Non-Hispanic"},
                     "Town": {"type": "integer", "value": raceCell(town, "Black or African American Alone")},
                     "County": {"type": "integer", "value": raceCell(county, "Black or African American Alone")},
                     "State": {"type": "integer", "value": raceCell(state, "Black or African American Alone")}
