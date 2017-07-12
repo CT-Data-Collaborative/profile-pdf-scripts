@@ -1099,7 +1099,8 @@ function serviceToProfile(town, county, state) {
     //
     // ********************************************************
 
-    var densityYear = factYear(town, "landarea");
+    // var densityYear = factYear(town, "landarea");
+    var densityYear = acsPopYear;
     var ageYear = factYear(town, "median_age");
     var householdsYear = factYear(town, "households");
     var hhIncYear = factYear(town, "median_hh_income");
