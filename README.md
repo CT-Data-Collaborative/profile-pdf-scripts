@@ -1,25 +1,35 @@
 # Creating Town Profile PDFS
 
 ## Requirements
+
+These scripts rely on Python 3.6+. Setting using `pyenv` is recommended, but use 3.6+ however you can get it.
+
 ### Python
-1.   Naked - https://pypi.python.org/pypi/Naked
-      +   `sudo pip install naked`
-2.   Requests - http://docs.python-requests.org/en/master/
-      +   `sudo pip install requests`
+1.   Create a python 3.6+ virtualenv
+      + `python3 -m venv venv`
+2.   Activate venv and install requirements
+      + `. ./venv/bin/activate`
+      + `pip install -r requiremnts`
+
 ### Javascript
 1.   NodeJS, with the following packages
       +   Minimist@1.2.0
       +   lodash@4.0.0  
+      +  Install locally with `npm install`
+
 ### Data
 1.   `towns.csv` - The only static data requirement for this script is the included csv. It contains three columns - Town, County, and State, and contains one row for each town with it's accompanying county and state value. This is the master list the script gets these combinations from, and will iterate through the data present in this file to create each town's report.
 
 
 ## Instructions
 1.   Make sure the pdf server is running.
-      + This should be as simple as `vagrant up` in the `reports` project directory, unless there have been any major changes to that project or its repository. The server will automatically start the process and serve pdf responses.
-      + **N.B.** If you've changed your vagrant script and are not using the pre-set IP address for your virtual machine, you will need to change the IP addresses used in `make_pdfs.py`!!!
+      + This should be as simple as `vagrant up` in the `reports` project directory, unless there have been any major changes to that project or its repository. The server will automatically start the process and serve pdf responses. (Note: currently the report vagrant repo isn't starting the flask server correctly, so you may need to ssh into run the server)
 2.   Run the included python script.
-      + Navigate to this directory in your command line and execute `python make_pdfs.py`
+      + Navigate to this directory in your command line and execute `python make_pdfs.py --help` to see the configuration requirements.
+      + Town and Year are optional (defaults to all and 2017)
+      + The `pdf_server` should be set to whatever IP address you are using for the reports Vagrant server (Set to be http://192.168.33.101:5000/ out of the box).
+      + The `profile_server` should be set to the publically facing town profile url.
+      + The `data` and `output` directories should also be specified. The script will create all of the correct data subdirectories, but the output directory should already exist (TODO: Fix to autocreate output dir if not existing).
 
 ## Under the hood
 1.   The python script will iterate through each town, make a request to the town profiles backend for the given town's data, and save it to file.

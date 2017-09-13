@@ -11,5 +11,8 @@
   "dependencies": {
     "lodash": "^4.15.0",
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0"
   }
 }

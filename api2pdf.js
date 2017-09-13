@@ -775,7 +775,7 @@ function serviceToProfile(town, county, state) {
     var municipalorgs = [
         county.name,
         findByKey(town.topmatter.labormarketareas, "lma").lma[0].Value,
-        findByKey(town.topmatter.econdev, "econdevregion").econdevregion[0].Value,
+        // findByKey(town.topmatter.econdev, "econdevregion").econdevregion[0].Value,
         findByKey(town.topmatter.rpa, "rpa").rpa[0].Value
     ];
 
@@ -844,7 +844,7 @@ function serviceToProfile(town, county, state) {
                 Year: [
                     "2000",
                     "2010",
-                    acsPopEndYear,
+                    acsPopYear,
                     "2020",
                     growthName
                 ]
@@ -902,7 +902,7 @@ function serviceToProfile(town, county, state) {
                         "value": findByKey(state.demographics.population, "population_dicennial_2010").population_dicennial_2010[0].Value
                     }
                 }, {
-                    "Year": {"type": "string", "value": acsPopEndYear},
+                    "Year": {"type": "string", "value": acsPopYear},
                     "Town": {
                         "type": "integer",
                         "value": findByKey(town.demographics.population, "population_acs").population_acs[0].Value
