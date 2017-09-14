@@ -794,7 +794,7 @@ function serviceToProfile(town, county, state) {
         config: {
             town: town.name,
             FIPS: fips,
-            profile_year: profileYear,
+            profile_years: profileYear,
             info: {
                 address: address,
                 municipalorgs: municipalorgs,
