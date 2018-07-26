@@ -92,7 +92,7 @@ def _restructure_data(town_path, county_path, state_path, town, output_path, yea
     node_cmd = f'api2pdf.js {town_flag} {county_flag} {state_flag} {year_flag}'
     json_request = muterun_js(node_cmd)
     pdf_data_path = f'{output_path}/{town}.json'
-
+        
     try:
         with open(pdf_data_path, "w") as outfile:
             json.dump(json.loads(json_request.stdout), outfile)
@@ -118,7 +118,7 @@ def _generate_pdf(town, pdf_data_path, pdf_api_target, output_directory):
 
 @click.command()
 @click.option('--town', '-t', default='All', help='Pass in a town name to limit generation to one town.')
-@click.option('--year', '-y', default='2017', help='Town profile year to fetch data for.')
+@click.option('--year', '-y', default='2018', help='Town profile year to fetch data for.')
 @click.option('--output', '-o', help='Base directory for saving output', type=click.Path())
 @click.option('--data', '-d', help='Directory for storing fetched data', default='data')
 @click.option('--profile_server', '-p', help='Base URL for Profile Server API. Ignore http.')

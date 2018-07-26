@@ -21,10 +21,6 @@ var countyFile = args.county;
 var stateFile = args.state;
 var profileYear = args.year;
 
-// var townFile = 'data/town/Suffield.json';
-// var countyFile = 'data/county/Hartford County.json';
-// var stateFile = 'data/state/Connecticut.json';
-
 var townData = JSON.parse(fs.readFileSync(townFile, {encoding: "utf8"}));
 var countyData = JSON.parse(fs.readFileSync(countyFile, {encoding: "utf8"}));
 var stateData = JSON.parse(fs.readFileSync(stateFile, {encoding: "utf8"}));
@@ -41,360 +37,6 @@ output.config.town = townData.name;
 
 // output to console
 console.log(JSON.stringify(output));
-
-
-// Constants
-
-// var DISTANT_POINTS = [
-//     "Hartford",
-//     "Boston",
-//     "Montreal",
-//     "Providence",
-//     "New York City"
-// ];
-
-
-// Helpers
-// var parse_suppression = function (cell) {
-//     if (cell.value == "-9999") {
-//         return {"type": "string", "value": "NA"};
-//     } else {
-//         return cell;
-//     }
-// };
-//
-// var findByKey = function (data, key) {
-//     return lodash.chain(data)
-//         .find(function (o) {
-//             return (key in o);
-//         }).value();
-// };
-//
-// var sfyFormat = function (year) {
-//     if (year.slice(0, 3) === "SFY") {
-//         year = year.slice(-4);
-//     }
-//
-//     return year;
-// };
-//
-// var growthValue = function (data, endYear) {
-//     var popTimePeriodOne = findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
-//     var popTimePeriodTwo = findByKey(data.demographics.population, "population_projection").population_projection[0].Value;
-//     var growthDenominator = 2020 - endYear;
-//
-//     return (((popTimePeriodTwo - popTimePeriodOne) / popTimePeriodTwo) / growthDenominator);
-// };
-//
-// var raceCell = function (data, race) {
-//     data = data.demographics.racecohort[0].race_cohort;
-//     return lodash.chain(data)
-//         .find(function (o) {
-//             return o["Race/Ethnicity"] === race && o.Row === "Population";
-//         })
-//         .value()
-//         .Value;
-// };
-//
-// var povertyCell = function (data) {
-//     data = findByKey(data.demographics.misc, "poverty").poverty;
-//     return lodash.chain(data)
-//             .find(function (o) {
-//                 return o.Row === "Poverty Status";
-//             }).value().Value / 100;
-// };
-//
-//
-// var factCell = function (data, fact) {
-//     return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
-//         .find(function (o) {
-//             return o.Row !== "Margins of Error";
-//         }).value().Value;
-// };
-//
-// var factYear = function (data, fact) {
-//     return lodash.chain(findByKey(data.demographics.misc, fact)[fact])
-//         .find(function (o) {
-//             return o.Row !== "Margins of Error";
-//         })
-//         .value()
-//         .Year;
-// };
-//
-// var populationStat = function (data) {
-//     return findByKey(data.demographics.population, "population_acs").population_acs[0].Value;
-// };
-//
-//
-// var educationCell = function (data, attainment, measureType) {
-//     return lodash.chain(data.demographics.edattain[0].ed_attainment)
-//         .find(function (o) {
-//             return o["Measure Type"] === measureType
-//                 && o["Educational Attainment"] === attainment
-//                 && o.Row !== "Margins of Error";
-//         })
-//         .value()
-//         .Value;
-// };
-//
-// var ageCell = function (data, ages, measureType) {
-//     ages = [].concat(ages);
-//
-//     var toSum = lodash.chain(ages)
-//         .map(function (age) {
-//             return lodash.chain(data.demographics.agecohort[0].age_cohort)
-//                 .find(function (o) {
-//                     return (
-//                         o["Measure Type"] === measureType
-//                         && o["Age Cohort"] === age
-//                         && o.Row !== "Margins of Error"
-//                     );
-//                 })
-//                 .value()
-//                 .Value;
-//         })
-//         .value();
-//
-//     return lodash.reduce(toSum, function (sum, value) {
-//         return sum + value;
-//     });
-// };
-//
-// var employmentSectors = function (data) {
-//     data = data.government.industryemployment[0].employmentbyindustry;
-//     return lodash.chain(data)
-//         .sortBy(function (o) {
-//             return o.NAICS;
-//         })
-//         .filter(function (o) {
-//             return o.NAICS !== "";
-//         })
-//         .map(function (o) {
-//             var objectToJoin = [o.NAICS, o.Column];
-//             return objectToJoin.join(" - ");
-//         })
-//         .uniq()
-//         .value();
-// };
-//
-// var employmentCell = function (data, sector) {
-//     if (sector.split(" - ")[0] !== "Total") {
-//         sector = sector.split(" - ").pop();
-//     }
-//     data = data.government.industryemployment[0].employmentbyindustry;
-//
-//     var cell = lodash.chain(data)
-//         .find(function (o) {
-//             return o.Column === sector;
-//         })
-//         .value()
-//         .Value;
-//
-//     if (cell == "-9999") {
-//         return {"type": "string", "value": "NA"};
-//     } else {
-//         return {"type": "integer", "value": cell};
-//     }
-// };
-//
-// var unitsCell = function (data, sector) {
-//     if (sector.split(" - ")[0] !== "Total") {
-//         sector = sector.split(" - ").pop();
-//     }
-//     data = data.government.industryunits[0].unitsbyindustry;
-//
-//     var cell = lodash.chain(data)
-//         .find(function (o) {
-//             return o.Column === sector;
-//         })
-//         .value()
-//         .Value;
-//
-//     if (cell == "-9999") {
-//         return {"type": "string", "value": "NA"};
-//     } else {
-//         return {"type": "integer", "value": cell};
-//     }
-// };
-//
-// var grandListTopFiveCell = function (data, name, variable) {
-//     var cell = lodash.chain(data.government.grandlisttopfive[0].grand_top_five)
-//         .find(function (o) {
-//             return (
-//                 o.Name === name
-//             );
-//         })
-//         .value()
-//         .Value;
-//
-//     if (cell === "-9999") {
-//         return {"type": "string", "value": "NA"};
-//     } else if (cell === "-666666") {
-//         return {"type": "string", "value": " - "};
-//     } else {
-//         return {"type": "currency", "value": cell};
-//     }
-// };
-//
-// //
-// // var smarterBalancedCell = function (data, grade, subject) {
-// //     var datum = lodash.chain(data.education.cmt[0].cmt)
-// //         .find(function (o) {
-// //             return (o.Grade === grade
-// //             && o.Subject === subject);
-// //         })
-// //         .value()
-// //         .Value;
-// //
-// //     if (datum.trim() === "-") {
-// //         return {"type": "string", "value": "NA"};
-// //     } else {
-// //         return {"type": "percent", "value": parseFloat(datum) / 100};
-// //     }
-// // };
-//
-// var gradeRateCell = function (data, gender) {
-//     var cell = lodash.chain(data.education.gradrate[0].gradrate)
-//         .find(function (o) {
-//             return o.Gender == gender;
-//         })
-//         .value();
-//
-//     cell = {
-//         "Gender": {"type": "string", "value": gender},
-//         "Location": {"type": "string", "value": cell.District},
-//         "Value": {"type": "percent", "value": parseInt(cell.Value) / 100}
-//     };
-//
-//     if (cell.Value.value == -99.99) {
-//         cell.Value = {"type": "string", "value": "*"};
-//     }
-//
-//     return cell;
-// };
-//
-//
-// var revenueCell = function (data, indicator) {
-//     return lodash.chain(data.government.revenue[0].municipal_revenue_and_expenditures)
-//         .find(function (o) {
-//             return o.Row === indicator;
-//         })
-//         .value()
-//         .Value;
-// };
-//
-// var debtCell = function (data, indicator) {
-//     return lodash.chain(findByKey(data.government.debt, "municipal_debt").municipal_debt)
-//         .find(function (o) {
-//             return o.Row === indicator;
-//         })
-//         .value()
-//         .Value;
-// };
-//
-// var ENGLCell = function (data, indicator) {
-//     data = findByKey(data.government.grand, "municipal_grand_list").municipal_grand_list;
-//     return lodash.chain(data)
-//         .find(function (o) {
-//             return o.Row === indicator;
-//         })
-//         .value()
-//         .Value;
-// };
-//
-// var housingCell = function (data, subset, find1, find2) {
-//     data = findByKey(data.housing[subset], find1)[find1];
-//
-//     // return data
-//     if (find2 === null || find2 === false) {
-//         // cell = data[0].Value
-//         var cell = data.filter(function (o) {
-//             return o.Row !== "Margins of Error";
-//         })[0].Value;
-//     } else {
-//         var cell = lodash.chain(data)
-//             .filter(function (o) {
-//                 return o.Row != "Margins of Error";
-//             })
-//             .find(function (o) {
-//                 var match = true;
-//                 [].concat(find2).forEach(function (condition) {
-//                     match = (match && o[condition.key] === condition.value);
-//                 });
-//                 return match;
-//             })
-//             .value()
-//             .Value;
-//     }
-//
-//     return (cell === "-9999" ? "NA" : cell);
-// };
-//
-// var housingCellYear = function (data, subset, find1, find2) {
-//     data = findByKey(data.housing[subset], find1)[find1];
-//
-//     // return data
-//     if (find2 === null || find2 === false) {
-//         return data[0].Year;
-//     } else {
-//         return lodash.chain(data)
-//             .find(function (o) {
-//                 var match = true;
-//                 [].concat(find2).forEach(function (condition) {
-//                     match = (match && o[condition.key] === condition.value);
-//                 });
-//                 return match;
-//             })
-//             .value()
-//             .Year;
-//     }
-// };
-//
-// var homeSalesCell = function (data, price) {
-//     var cell = lodash.chain(data.housing.sales[0].home_sales)
-//         .find(function (o) {
-//             return o["Row"] === price;
-//         })
-//         .value();
-//
-//     if (cell.Value == -9999) {
-//         return "NA";
-//     }
-//     else {
-//         return cell.Value;
-//     }
-// };
-//
-// var placeOfWorkCell = function (data, row) {
-//     data = findByKey(data.labor.placeofwork, "employmentbyindustry").employmentbyindustry;
-//     var value = lodash.chain(data)
-//         .find(function (o) {
-//             return o.Row === row;
-//         })
-//         .value()
-//         .Value;
-//
-//     if (value == "-9999") {
-//         return {"type": "string", "value": "NA"};
-//     } else {
-//         return {"type": "integer", "value": value};
-//     }
-// };
-//
-// var aagrCell = function (data, row) {
-//     return findByKey(data.labor.placeofwork, "aagr").aagr[0].Value;
-// };
-//
-// var residenceCell = function (data, cohort) {
-//     data = findByKey(data.labor.placeofresidence, "laborforce").laborforce;
-//     return lodash.chain(data)
-//         .find(function (o) {
-//             return o.Measure === cohort;
-//         })
-//         .value()
-//         .Value;
-// };
-
 
 /** Main Function **/
 function serviceToProfile(town, county, state) {
@@ -488,6 +130,103 @@ function serviceToProfile(town, county, state) {
             .value()
             .Value;
     };
+    
+    var veteranCell = function (data, status, measureType) {
+        return lodash.chain(data.labor.veteran[0].veteran)
+            .find(function (o) {
+                return o["Measure Type"] === measureType
+                    && o["Veteran Status"] === status
+                    && o.Row !== "Margins of Error";
+            })
+            .value()
+            .Value;
+    };    
+    
+  var rentCell = function (data, measureType) {
+      return lodash.chain(data.housing.rental[0].medianrent)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";
+          })
+          .value()
+          .Value;
+  };    
+    
+  var burdenCell = function (data, measureType) {
+      return lodash.chain(data.housing.rental[1].costburdenedrental)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";
+          })
+          .value()
+          .Value;
+  };    
+    
+  var pcrimeCell = function (data, measureType) {
+      return lodash.chain(data.other.crime[0].propertycrimerate)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+          })
+          .value()
+          .Value;
+  };     
+    
+  var vcrimeCell = function (data, measureType) {
+      return lodash.chain(data.other.crime[1].violentcrimerate)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+          })
+          .value()
+          .Value;
+  };     
+    
+  var enrollmaleCell = function (data, measureType) {
+      return lodash.chain(data.labor.enrolled[0].enrolled_male)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";          
+          })
+          .value()
+          .Value;
+  };     
+
+  var enrollfemaleCell = function (data, measureType) {
+      return lodash.chain(data.labor.enrolled[1].enrolled_female)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";          
+          })
+          .value()
+          .Value;
+  };        
+    
+  var privateCell = function (data, measureType) {
+      return lodash.chain(data.education.publicprivate[0].enroll_private)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";          
+          })
+          .value()
+          .Value;
+  };        
+
+  var publicCell = function (data, measureType) {
+      return lodash.chain(data.education.publicprivate[1].enroll_public)
+          .find(function (o) {
+              return o["Measure Type"] === measureType
+                  && o.Row !== "Margins of Error";          
+          })
+          .value()
+          .Value;
+  };     
+    
+    var selfemployCell = function (data) {
+      return lodash.chain(data.labor.placeofresidence[1].selfemployed[0])
+          .value()
+          .Value;
+  };   
+    
+    
 
     var ageCell = function (data, ages, measureType) {
         ages = [].concat(ages);
@@ -730,9 +469,9 @@ function serviceToProfile(town, county, state) {
         }
     };
 
-    var aagrCell = function (data, row) {
-        return findByKey(data.labor.placeofwork, "aagr").aagr[0].Value;
-    };
+ //   var aagrCell = function (data, row) {
+ //       return findByKey(data.labor.placeofwork, "aagr").aagr[0].Value;
+ //   };
 
     var residenceCell = function (data, cohort) {
         data = findByKey(data.labor.placeofresidence, "laborforce").laborforce;
@@ -743,6 +482,7 @@ function serviceToProfile(town, county, state) {
             .value()
             .Value;
     };
+    
 
 
     // config info
@@ -988,11 +728,11 @@ function serviceToProfile(town, county, state) {
             "records": [
                 {
                     "Race": {"type": "string", "value": "White Alone, Non-Hispanic"},
-                    "Town": {"type": "integer", "value": raceCell(town, "White Alone, Not Hispanic or Latino")},
-                    "County": {"type": "integer", "value": raceCell(county, "White Alone, Not Hispanic or Latino")},
-                    "State": {"type": "integer", "value": raceCell(state, "White Alone, Not Hispanic or Latino")}
+                    "Town": {"type": "integer", "value": raceCell(town, "White Alone Not Hispanic or Latino")},
+                    "County": {"type": "integer", "value": raceCell(county, "White Alone Not Hispanic or Latino")},
+                    "State": {"type": "integer", "value": raceCell(state, "White Alone Not Hispanic or Latino")}
                 }, {
-                    "Race": {"type": "string", "value": "Black Alone, Non-Hispanic"},
+                    "Race": {"type": "string", "value": "Black Alone"},
                     "Town": {"type": "integer", "value": raceCell(town, "Black or African American Alone")},
                     "County": {"type": "integer", "value": raceCell(county, "Black or African American Alone")},
                     "State": {"type": "integer", "value": raceCell(state, "Black or African American Alone")}
@@ -1030,7 +770,7 @@ function serviceToProfile(town, county, state) {
                         "value": parseInt(raceCell(state, "Two or More Races")) + parseInt(raceCell(state, "Some Other Race Alone"))
                     }
                 }, {
-                    "Race": {"type": "string", "value": "Hispanic (Any Race)"},
+                    "Race": {"type": "string", "value": "Hispanic or Latino"},
                     "Town": {"type": "integer", "value": raceCell(town, "Hispanic or Latino")},
                     "County": {"type": "integer", "value": raceCell(county, "Hispanic or Latino")},
                     "State": {"type": "integer", "value": raceCell(state, "Hispanic or Latino")}
@@ -1889,6 +1629,50 @@ function serviceToProfile(town, county, state) {
             ]
         }
     });
+    
+    // ********************************************************
+    //
+    // Start Public vs Private Enrollment Data Processing
+    //
+    // ********************************************************
+    output.config.info.datayears["publicprivate"] = town.demographics.edattain[0].ed_attainment[0].Year;
+
+    output.objects.push({
+        type: "table",
+        name: "publicprivate",
+        config: {
+            nest: ["Cohort"],
+            order: {
+                Cohort: [
+                    "Public",
+                    "Private"
+                ],
+                leaf: ["Town", "County", "State"]
+            }
+        },
+        data: {
+            "fields": [
+                {"type": "string", "id": "Cohort"},
+                {"type": "string", "id": "Town"},
+                {"type": "string", "id": "County"},
+                {"type": "integer", "id": "State"}
+            ],
+            "records": [
+                {
+                    Cohort: {type: "string", value: "Public"},
+                    Town: {type: "percent", value: publicCell(town, "Percent")/100},
+                    County: {type: "percent", value: publicCell(county, "Percent")/100},
+                    State: {type: "percent", value: publicCell(state, "Percent")/100}
+                }, {
+                    Cohort: {type: "string", value: "Private"},
+                    Town: {type: "percent", value: privateCell(town, "Percent")/100},
+                    County: {type: "percent", value: privateCell(county, "Percent")/100},
+                    State: {type: "percent", value: privateCell(state, "Percent")/100}
+                }            
+            ]
+        }
+    });
+    
     // ********************************************************
     //
     // Start Enrollment Data Processing
@@ -1897,6 +1681,7 @@ function serviceToProfile(town, county, state) {
 
     var grades = ["PK", "K", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     var enrollment = findByKey(town.education.enrollment, "enrollment").enrollment;
+    var enrollmentYear = findByKey(town.education.enrollment, "enrollment").enrollment[0].Year;
 
     enrollment = lodash.chain(enrollment)
         .map(function (o) {
@@ -2869,6 +2654,49 @@ function serviceToProfile(town, county, state) {
     });
 
     output.objects.push(homeSalesObject);
+    
+    // ********************************************************
+    //
+    // Start Median Rent Data Processing
+    //
+    // ********************************************************
+ 
+    output.config.info.datayears["medianrent"] = findByKey(town.housing.rental, "medianrent").medianrent[0].Year;
+
+    output.objects.push({
+        type: "table",
+        name: "medianrent",
+        config: {
+            nest: ["Cohort"],
+            order: {
+                Cohort: [
+                    "Median Rent"
+                ],
+                leaf: ["Town", "County", "State"]
+            }
+        },
+        data: {
+            "fields": [
+                {"type": "string", "id": "Cohort"},
+                {"type": "string", "id": "Town"},
+                {"type": "string", "id": "County"},
+                {"type": "string", "id": "State"}
+            ],
+            "records": [
+              {
+                  Cohort: {type: "string", value: "Median Rent"},
+                  Town: {type: "currency", value: rentCell(town, "Currency")},
+                  County: {type: "currency", value: rentCell(county, "Currency")},
+                  State: {type: "currency", value: rentCell(state, "Currency")}
+              },{
+                  Cohort: {type: "string", value: "Cost-burdened Renters"},
+                  Town: {type: "percent", value: burdenCell(town, "Percent")/100},
+                  County: {type: "percent", value: burdenCell(county, "Percent")/100},
+                  State: {type: "percent", value: burdenCell(state, "Percent")/100}
+              }                   
+            ]
+        }
+    });
 
     // ********************************************************
     //
@@ -2886,10 +2714,12 @@ function serviceToProfile(town, county, state) {
             nest: ["Cohort"],
             order: {
                 Cohort: [
-                    "Labor Force",
-                    "Employed",
-                    "Unemployed",
-                    "Unemployment Rate"
+                    "Employed Residents",
+                    "Unemployed Residents",
+                    "Unemployment Rate",
+                    "Self-Employed Rate",
+                    "Total Employers",
+                    "Total Employed"
                 ],
                 leaf: ["Town", "County", "State"]
             }
@@ -2903,17 +2733,12 @@ function serviceToProfile(town, county, state) {
             ],
             "records": [
                 {
-                    Cohort: {type: "string", value: "Labor Force"},
-                    Town: {type: "integer", value: residenceCell(town, "Labor Force")},
-                    County: {type: "integer", value: residenceCell(county, "Labor Force")},
-                    State: {type: "integer", value: residenceCell(state, "Labor Force")}
-                }, {
-                    Cohort: {type: "string", value: "Employed"},
+                    Cohort: {type: "string", value: "Residents Employed"},
                     Town: {type: "integer", value: residenceCell(town, "Employment")},
                     County: {type: "integer", value: residenceCell(county, "Employment")},
                     State: {type: "integer", value: residenceCell(state, "Employment")}
                 }, {
-                    Cohort: {type: "string", value: "Unemployed"},
+                    Cohort: {type: "string", value: "Residents Unemployed"},
                     Town: {type: "integer", value: residenceCell(town, "Unemployment")},
                     County: {type: "integer", value: residenceCell(county, "Unemployment")},
                     State: {type: "integer", value: residenceCell(state, "Unemployment")}
@@ -2922,73 +2747,25 @@ function serviceToProfile(town, county, state) {
                     Town: {type: "percent", value: residenceCell(town, "Unemployment Rate") / 100},
                     County: {type: "percent", value: residenceCell(county, "Unemployment Rate") / 100},
                     State: {type: "percent", value: residenceCell(state, "Unemployment Rate") / 100}
-                }
-            ]
-        }
-    });
-
-
-    // ********************************************************
-    //
-    // Start Place of Work Data Processing
-    //
-    // ********************************************************
-
-
-    var aagrYearStart = findByKey(town.labor.placeofwork, "aagr").aagr[0].Row.slice(-10, -6);
-    var aagrYearEnd = findByKey(town.labor.placeofwork, "aagr").aagr[0].Row.slice(-3, -1);
-    var aagrIndicator = aagrYearStart + "-'" + aagrYearEnd + " AAGR";
-
-    output.config.info.datayears["place_of_work"] = findByKey(town.labor.placeofwork, "employmentbyindustry").employmentbyindustry[0].Year;
-
-    output.objects.push({
-        type: "table",
-        name: "place_of_work",
-        config: {
-            nest: ["Indicator"],
-            order: {
-                Indicator: [
-                    "Units",
-                    "Total Employment",
-                    aagrIndicator,
-                    "Mfg Employment"
-                ],
-                leaf: ["Town", "County", "State"]
-            }
-        },
-        data: {
-            "fields": [
-                {"type": "string", "id": "Indicator"},
-                {"type": "string", "id": "Town"},
-                {"type": "string", "id": "County"},
-                {"type": "integer", "id": "State"}
-            ],
-            "records": [
-                {
-                    Indicator: {type: "string", value: "Units"},
+                }, {
+                    Cohort: {type: "string", value: "Self-Employed Rate"},
+                    Town: {type: "percent", value: selfemployCell(town)/100},
+                    County: {type: "percent", value: selfemployCell(county)/100 },
+                    State: {type: "percent", value: selfemployCell(state)/100}
+                }, {                
+                    Cohort: {type: "string", value: "Total Employers"},
                     Town: placeOfWorkCell(town, "All Industries - Number of Employers"),
                     County: placeOfWorkCell(county, "All Industries - Number of Employers"),
                     State: placeOfWorkCell(state, "All Industries - Number of Employers")
                 }, {
-                    Indicator: {type: "string", value: "Total Employment"},
+                    Cohort: {type: "string", value: "Total Employed"},
                     Town: placeOfWorkCell(town, "All Industries - Annual Average Employment"),
                     County: placeOfWorkCell(county, "All Industries - Annual Average Employment"),
                     State: placeOfWorkCell(state, "All Industries - Annual Average Employment")
-                }, {
-                    Indicator: {type: "string", value: aagrIndicator},
-                    Town: {type: "percent", value: aagrCell(town)},
-                    County: {type: "percent", value: aagrCell(county)},
-                    State: {type: "percent", value: aagrCell(state)}
-                }, {
-                    Indicator: {type: "string", value: "Mfg Employment"},
-                    Town: placeOfWorkCell(town, "Manufacturing - Annual Average Employment"),
-                    County: placeOfWorkCell(county, "Manufacturing - Annual Average Employment"),
-                    State: placeOfWorkCell(state, "Manufacturing - Annual Average Employment")
-                }
+               }                
             ]
         }
     });
-
 
     // ********************************************************
     //
@@ -3038,36 +2815,116 @@ function serviceToProfile(town, county, state) {
         }
     });
 
+    // ********************************************************
+    //
+    // Start Veteran Processing
+    //
+    // ********************************************************
+    
+   var vetYear = acsPopYear;
 
+   output.config.info.datayears["veteran"] = acsPopYear;
+   
+   output.objects.push({
+       type: "table",
+       name: "veteran",
+       config: {
+           nest: [
+               "Veteran",
+               "Geography"
+           ],
+           order: {
+               leaf: [
+                   "Number",
+                   "Percent"
+               ],
+               Veteran: [
+                   "Veterans (" + vetYear + ")"                       
+               ],
+               Geography: [
+                   "Town",
+                   "State"
+               ]
+           },
+           formats: {
+               percent: ".0%"
+           }
+       },
+       data: {
+           "fields": [
+               {
+                   "type": "string",
+                   "id": "Veteran"
+               },
+               {
+                   "type": "string",
+                   "id": "Geography"
+               },
+               {
+                   "type": "integer",
+                   "id": "Number"
+               },
+               {
+                   "type": "percent",
+                   "id": "Percent"
+               }
+           ],
+           "records": [
+               {
+                   "Veteran": {"type": "string", "value": "Veterans (" + vetYear + ")"},
+                   "Geography": {"type": "string", "value": "Town"},
+                   "Number": {"type": "integer", "value": veteranCell(town, "Veteran", "Number")}
+               },  {
+                 "Veteran": {"type": "string", "value": "Veterans (" + vetYear + ")"},
+                 "Geography": {"type": "string", "value": "State"},
+                 "Number": {"type": "integer", "value": veteranCell(state, "Veteran", "Number")}
+             }
+               
+           ]
+       }
+   });   
+    
     // ********************************************************
     //
     // Start Crime Data Processing
     //
     // ********************************************************
 
-    output.config.info.datayears["crime"] = town.other.crime[0].crimerate[0].Year;
+    output.config.info.datayears["propertycrimerate"] = findByKey(town.other.crime, "propertycrimerate").propertycrimerate[0].Year;
 
     output.objects.push({
         type: "table",
-        name: "crime",
+        name: "propertycrimerate",
         config: {
-            nest: ["Indicator"]
+            nest: ["Cohort"],
+            order: {
+                Cohort: [
+                    "Property", 
+                    "Violent"
+                    
+                ],
+                leaf: ["Town", "State"]
+            }
         },
         data: {
             "fields": [
-                {"type": "string", "id": "Indicator"},
+                {"type": "string", "id": "Cohort"},
                 {"type": "string", "id": "Town"},
-                {"type": "integer", "id": "State"}
+                {"type": "string", "id": "State"}
             ],
             "records": [
-                {
-                    Indicator: {type: "string", value: "Per 100,000 residents"},
-                    Town: {type: "integer", value: town.other.crime[0].crimerate[0].Value},
-                    State: {type: "integer", value: state.other.crime[0].crimerate[0].Value}
-                }
+              {
+                  Cohort: {type: "string", value: "Property"},
+                  Town: {type: "integer", value: pcrimeCell(town, "Rate (per 100,000)")},
+                  State: {type: "integer", value: pcrimeCell(state, "Rate (per 100,000)")}
+              },{
+                  Cohort: {type: "string", value: "Violent"},
+                  Town: {type: "integer", value: vcrimeCell(town, "Rate (per 100,000)")},
+                  State: {type: "integer", value: vcrimeCell(state, "Rate (per 100,000)")}
+              }                   
             ]
         }
-    });
+    });    
 
 
     // ********************************************************
@@ -3085,15 +2942,8 @@ function serviceToProfile(town, county, state) {
             .value()
             .Value;
 
-    var internet = lodash.chain(library)
-        .find(function (o) {
-            return o.Row === "Internet Computer Use"
-        })
-        .value()
-        .Value;
-
     circulation = (circulation === "-" ? "NA" : circulation);
-    internet = (internet === "-" ? "NA" : internet);
+
 
     output.config.info.datayears["library"] = library[0].Year;
 
@@ -3103,7 +2953,7 @@ function serviceToProfile(town, county, state) {
         config: {
             nest: ["Indicator"],
             order: {
-                Indicator: ["Circulation per Capita", "Internet use per Visit"]
+                Indicator: ["Library circulation per capita"]                
             }
         },
         data: {
@@ -3113,15 +2963,55 @@ function serviceToProfile(town, county, state) {
             ],
             "records": [
                 {
-                    Indicator: {type: "string", value: "Circulation per Capita"},
+                    Indicator: {type: "string", value: "Library circulation per capita"},
                     Town: {type: (circulation === "NA" ? "string" : "decimal"), value: circulation}
-                }, {
-                    Indicator: {type: "string", value: "Internet Use per Visit"},
-                    Town: {type: (internet === "NA" ? "string" : "decimal"), value: internet}
                 }
             ]
         }
     });
+    
+    // ********************************************************
+    //
+    // Start Disengaged Youth Processing
+    //
+    // ********************************************************
+
+    output.config.info.datayears["disengagedyouth"] = findByKey(town.labor.enrolled, "enrolled_male").enrolled_male[0].Year;
+
+    output.objects.push({
+        type: "table",
+        name: "disengagedyouth",
+        config: {
+            nest: ["Cohort"],
+            order: {
+                Cohort: [
+                    "Female", 
+                    "Male"
+                    
+                ],
+                leaf: ["Town", "State"]
+            }
+        },
+        data: {
+            "fields": [
+                {"type": "string", "id": "Cohort"},
+                {"type": "string", "id": "Town"},
+                {"type": "string", "id": "State"}
+            ],
+            "records": [
+              {
+                  Cohort: {type: "string", value: "Female"},
+                  Town: {type: "percent", value: enrollfemaleCell(town, "Percent")/100},
+                  State: {type: "percent", value: enrollfemaleCell(state, "Percent")/100}
+              },{
+                  Cohort: {type: "string", value: "Male"},
+                  Town: {type: "percent", value: enrollmaleCell(town, "Percent")/100},
+                  State: {type: "percent", value: enrollmaleCell(state, "Percent")/100}
+              }                   
+            ]
+        }
+    });    
+    
 
     // ********************************************************
     //
@@ -3130,30 +3020,30 @@ function serviceToProfile(town, county, state) {
     // ********************************************************
 
 
-    output.config.info.datayears["family_assistance"] = sfyFormat(findByKey(town.other.services, "tanf").tanf[0].Year);
+    //output.config.info.datayears["family_assistance"] = sfyFormat(findByKey(town.other.services, "tanf").tanf[0].Year);
 
-    var tanf_value = findByKey(town.other.services, "tanf").tanf[0].Value;
-    tanf_value = parse_suppression(tanf_value);
+   // var tanf_value = findByKey(town.other.services, "tanf").tanf[0].Value;
+   // tanf_value = parse_suppression(tanf_value);
 
-    output.objects.push({
-        type: "table",
-        name: "family_assistance",
-        config: {
-            nest: ["Indicator"]
-        },
-        data: {
-            fields: [
-                {type: "string", id: "Indicator"},
-                {type: "string", id: "Town"}
-            ],
-            records: [
-                {
-                    "Indicator": {type: "string", value: "Temporary Family Assistance (TFA)"},
-                    "Town": tanf_value
-                }
-            ]
-        }
-    });
+   // output.objects.push({
+   //     type: "table",
+   //     name: "family_assistance",
+   //     config: {
+   //         nest: ["Indicator"]
+   //     },
+   //     data: {
+   //         fields: [
+   //             {type: "string", id: "Indicator"},
+   //             {type: "string", id: "Town"}
+   //         ],
+   //         records: [
+   //             {
+   //                 "Indicator": {type: "string", value: "Temporary Family Assistance (TFA)"},
+   //                 "Town": tanf_value
+   //             }
+   //         ]
+   //     }
+   // });
 
     // ********************************************************
     //
@@ -3161,27 +3051,27 @@ function serviceToProfile(town, county, state) {
     //
     // ********************************************************
 
-    output.config.info.datayears["population_assistance"] = sfyFormat(findByKey(town.other.services, "snap").snap[0].Year);
-
-    output.objects.push({
-        type: "table",
-        name: "population_assistance",
-        config: {
-            nest: ["Indicator"]
-        },
-        data: {
-            fields: [
-                {type: "string", id: "Indicator"},
-                {type: "string", id: "Town"}
-            ],
-            records: [
-                {
-                    "Indicator": {type: "string", value: "Supplemental Nutrition Assistance Program (SNAP)"},
-                    "Town": {type: "integer", value: findByKey(town.other.services, "snap").snap[0].Value}
-                }
-            ]
-        }
-    });
+    //output.config.info.datayears["population_assistance"] = sfyFormat(findByKey(town.other.services, "snap").snap[0].Year);
+//
+    //output.objects.push({
+    //    type: "table",
+    //    name: "population_assistance",
+    //    config: {
+    //        nest: ["Indicator"]
+    //    },
+    //    data: {
+    //        fields: [
+    //            {type: "string", id: "Indicator"},
+    //            {type: "string", id: "Town"}
+    //        ],
+    //        records: [
+    //            {
+    //                "Indicator": {type: "string", value: "Supplemental Nutrition Assistance Program (SNAP)"},
+    //                "Town": {type: "integer", value: findByKey(town.other.services, "snap").snap[0].Value}
+    //            }
+    //        ]
+    //    }
+    //});
 
     // ********************************************************
     //
