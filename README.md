@@ -9,7 +9,7 @@ These scripts rely on Python 3.6+. Setting using `pyenv` is recommended, but use
       + `python3 -m venv venv`
 2.   Activate venv and install requirements
       + `. ./venv/bin/activate`
-      + `pip install -r requiremnts`
+      + `pip install -r requirements`
 
 ### Javascript
 1.   NodeJS, with the following packages
@@ -23,10 +23,21 @@ These scripts rely on Python 3.6+. Setting using `pyenv` is recommended, but use
 
 ## Instructions
 1.   Make sure the pdf server is running.
-      + This should be as simple as `vagrant up` in the `reports` project directory, unless there have been any major changes to that project or its repository. The server will automatically start the process and serve pdf responses. (Note: currently the report vagrant repo isn't starting the flask server correctly, so you may need to ssh into run the server)
+      + Run `vagrant up` in the `reports` project directory, unless there have been any major changes to that project or its repository.
+      + The IP of the pdf server is found in the Vagrantfile, in this case the IP is 192.168.33.101
+      + Go to http://192.168.33.101/status in your browser to confirm that the server is working.      
+      + If you can’t connect to flask server, do a `vagrant halt` to shut the box down and then open up the Vagrantfile in an editor and change the last 3 of the IP address to something else (i.e. 102), then do `vagrant up` to try again
+      + The server will automatically start the process and serve pdf responses. (Note: currently the report vagrant repo isn't starting the flask server correctly, so you may need to ssh into run the server)
+      + To do this, run `vagrant ssh`, cd to /var/www/reports, activate the venv, `. venv/bin/activate`, run `python pdf_server.py`
+      + Navigate to http://192.168.33.101:5000/, you should see a Not Found error page, that's ok, keep this open.  
 2.   Run the included python script.
-      + Navigate to this directory in your command line and execute `python make_pdfs.py --help` to see the configuration requirements.
-      + Town and Year are optional (defaults to all and 2017)
+      + Navigate to this directory in your command line and create then activate the virtual envionment
+      + Run the requirements, `pip install -r requirements.txt` 
+      + Activate the node packages, `npm install`
+      + Execute `python make_pdfs.py --help` to see the configuration requirements.
+      + To run the PDFs on the current profile server (profiles.ctdata.org): run the following command:
+      + `python make_pdfs.py -y 2018 -t Hartford -o test_pdfs -d test_data -p profiles.ctdata.org -s 192.168.33.101`
+      + Town (-t) and Year (-y) are optional (defaults to all and 2018)
       + The `pdf_server` should be set to whatever IP address you are using for the reports Vagrant server (Set to be http://192.168.33.101:5000/ out of the box).
       + The `profile_server` should be set to the publically facing town profile url.
       + The `data` and `output` directories should also be specified. The script will create all of the correct data subdirectories, but the output directory should already exist (TODO: Fix to autocreate output dir if not existing).
